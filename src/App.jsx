@@ -5,9 +5,7 @@ import "./App.css";
 const Header = () => {
   return (
     <div>
-        <h1 className="headerclass">
-          Todo App
-        </h1>
+      <h1 className="headerclass">Todo App</h1>
     </div>
   );
 };
@@ -16,7 +14,7 @@ const RemainingTime = ({ targetDate }) => {
   if (!targetDate) return null;
 
   const difference = new Date(targetDate).getTime() - new Date().getTime();
-  
+
   if (difference <= 0) {
     return <span className="time-up-text">Time's up!</span>;
   }
@@ -42,7 +40,8 @@ const PriorityDropdown = ({ currentPriority, onSelect }) => {
     { id: 4, label: "Priority 4 (None)", emoji: "⚪" },
   ];
 
-  const currentOption = priorities.find((p) => p.id === currentPriority) || priorities[3];
+  const currentOption =
+    priorities.find((p) => p.id === currentPriority) || priorities[3];
 
   return (
     <div className="priority-dropdown-container">
@@ -73,7 +72,9 @@ const PriorityDropdown = ({ currentPriority, onSelect }) => {
               >
                 <span className="priority-emoji">{p.emoji}</span>
                 <span className="priority-label">{p.label}</span>
-                {currentPriority === p.id && <span className="checkmark">✓</span>}
+                {currentPriority === p.id && (
+                  <span className="checkmark">✓</span>
+                )}
               </div>
             ))}
           </div>
@@ -145,7 +146,7 @@ const Add_Task = ({ onClose, Tasks, setTasks }) => {
   const handleAddTask = (e) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
-    
+
     const newTask = {
       id: Date.now(),
       text: inputValue,
@@ -156,7 +157,7 @@ const Add_Task = ({ onClose, Tasks, setTasks }) => {
 
     setTasks([...Tasks, newTask]);
     setInputValue("");
-    setSelectedPriority(4); 
+    setSelectedPriority(4);
     setDeadline(1);
   };
 
@@ -167,32 +168,38 @@ const Add_Task = ({ onClose, Tasks, setTasks }) => {
   const handleUpdateTaskPriority = (taskId, newPriority) => {
     setTasks(
       Tasks.map((task) =>
-        task.id === taskId ? { ...task, priority: newPriority } : task
-      )
+        task.id === taskId ? { ...task, priority: newPriority } : task,
+      ),
     );
   };
 
   const handleUpdateTaskDeadline = (taskId, newDeadline) => {
     setTasks(
       Tasks.map((task) =>
-        task.id === taskId ? { ...task, deadline: newDeadline } : task
-      )
+        task.id === taskId ? { ...task, deadline: newDeadline } : task,
+      ),
     );
   };
 
   const handleToggleComplete = (taskId) => {
-    setTasks(Tasks.map((task) => 
-      task.id === taskId ? { ...task, completed: !task.completed } : task
-    ));
+    setTasks(
+      Tasks.map((task) =>
+        task.id === taskId ? { ...task, completed: !task.completed } : task,
+      ),
+    );
   };
 
-  const sortedTasks = [...Tasks].sort((a, b) => Number(a.completed || false) - Number(b.completed || false));
+  const sortedTasks = [...Tasks].sort(
+    (a, b) => Number(a.completed || false) - Number(b.completed || false),
+  );
 
   return (
     <div className="pop_up" onClick={onClose}>
       <div className="todo-container" onClick={(e) => e.stopPropagation()}>
-        <button className="close-task-btn" onClick={onClose}>✕</button>
-        
+        <button className="close-task-btn" onClick={onClose}>
+          ✕
+        </button>
+
         <form onSubmit={handleAddTask} className="task-form">
           <input
             type="text"
@@ -201,13 +208,14 @@ const Add_Task = ({ onClose, Tasks, setTasks }) => {
             onChange={handleInputChange}
             className="task-input"
           />
-          <span className="form-date-picker-wrapper">📅
-            <input 
-              type="date" 
+          <span className="form-date-picker-wrapper">
+            📅
+            <input
+              type="date"
               className="form-date-input"
               value={Deadline || ""}
-              onClick={(e) => e.target.showPicker()} 
-              onChange={(e) => setDeadline(e.target.value)} 
+              onClick={(e) => e.target.showPicker()}
+              onChange={(e) => setDeadline(e.target.value)}
             />
           </span>
           <div className="form-controls">
@@ -218,39 +226,45 @@ const Add_Task = ({ onClose, Tasks, setTasks }) => {
               />
               <span className="priority-label-text">Priority</span>
             </div>
-            <button type="submit" className="submit-task-btn">Add Task</button>
+            <button type="submit" className="submit-task-btn">
+              Add Task
+            </button>
           </div>
         </form>
 
         <ul className="task-list">
           {sortedTasks.map((Task) => (
-            <li key={Task.id} className={`task-item ${Task.completed ? 'completed-task' : ''}`}>
+            <li
+              key={Task.id}
+              className={`task-item ${Task.completed ? "completed-task" : ""}`}
+            >
               <div className="task-text-container">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   className="task-checkbox"
-                  checked={Task.completed || false} 
-                  onChange={() => handleToggleComplete(Task.id)} 
+                  checked={Task.completed || false}
+                  onChange={() => handleToggleComplete(Task.id)}
                 />
                 <div className="task-text">{Task.text}</div>
-                
-                  <div className="task-deadline-details">
-                    <span className="editable-deadline-container">
-                      📅
-                      <input 
-                        type="date" 
-                        className="hidden-date-input"
-                        value={Task.deadline || ""}
-                        onClick={(e) => e.target.showPicker()} 
-                        onChange={(e) => handleUpdateTaskDeadline(Task.id, e.target.value)} 
-                      />
-                    </span>
-                    <span className="task-deadline-date">{Task.deadline}</span>
-                    <RemainingTime targetDate={Task.deadline} />
-                  </div>
-                
+
+                <div className="task-deadline-details">
+                  <span className="editable-deadline-container">
+                    📅
+                    <input
+                      type="date"
+                      className="hidden-date-input"
+                      value={Task.deadline || ""}
+                      onClick={(e) => e.target.showPicker()}
+                      onChange={(e) =>
+                        handleUpdateTaskDeadline(Task.id, e.target.value)
+                      }
+                    />
+                  </span>
+                  <span className="task-deadline-date">{Task.deadline}</span>
+                  <RemainingTime targetDate={Task.deadline} />
+                </div>
               </div>
-              
+
               <div className="task-actions-bottom-right">
                 <PriorityDropdown
                   currentPriority={Task.priority || 4}
@@ -258,7 +272,12 @@ const Add_Task = ({ onClose, Tasks, setTasks }) => {
                     handleUpdateTaskPriority(Task.id, newPriority)
                   }
                 />
-                <button onClick={() => handleDeleteTask(Task.id)} className="delete-btn">✕</button>
+                <button
+                  onClick={() => handleDeleteTask(Task.id)}
+                  className="delete-btn"
+                >
+                  ✕
+                </button>
               </div>
             </li>
           ))}
@@ -274,19 +293,23 @@ const Search_Task = ({ onClose, Tasks, setTasks }) => {
   const handleUpdateTaskDeadline = (taskId, newDeadline) => {
     setTasks(
       Tasks.map((task) =>
-        task.id === taskId ? { ...task, deadline: newDeadline } : task
-      )
+        task.id === taskId ? { ...task, deadline: newDeadline } : task,
+      ),
     );
   };
 
-  const filteredTasks = Tasks.filter((task) =>
-    !task.completed && task.text.toLowerCase().includes(searchInput.trim().toLowerCase())
+  const filteredTasks = Tasks.filter(
+    (task) =>
+      !task.completed &&
+      task.text.toLowerCase().includes(searchInput.trim().toLowerCase()),
   );
 
   return (
     <div className="pop_up" onClick={onClose}>
       <div className="todo-container" onClick={(e) => e.stopPropagation()}>
-        <button className="close-task-btn" onClick={onClose}>✕</button>
+        <button className="close-task-btn" onClick={onClose}>
+          ✕
+        </button>
 
         <h3 className="search-title">Search Tasks</h3>
 
@@ -305,26 +328,33 @@ const Search_Task = ({ onClose, Tasks, setTasks }) => {
             <li key={task.id} className="task-item">
               <div className="task-text-container">
                 <div className="task-text">{task.text}</div>
-                
-                  <div className="task-deadline-details">
-                    <span className="editable-deadline-container">
-                      📅
-                      <input 
-                        type="date" 
-                        className="hidden-date-input"
-                        value={task.deadline || ""}
-                        onClick={(e) => e.target.showPicker()} 
-                        onChange={(e) => handleUpdateTaskDeadline(task.id, e.target.value)} 
-                      />
-                    </span>
-                    <span className="task-deadline-date">{task.deadline}</span>
-                    <RemainingTime targetDate={task.deadline} />
-                  </div>
-                
+
+                <div className="task-deadline-details">
+                  <span className="editable-deadline-container">
+                    📅
+                    <input
+                      type="date"
+                      className="hidden-date-input"
+                      value={task.deadline || ""}
+                      onClick={(e) => e.target.showPicker()}
+                      onChange={(e) =>
+                        handleUpdateTaskDeadline(task.id, e.target.value)
+                      }
+                    />
+                  </span>
+                  <span className="task-deadline-date">{task.deadline}</span>
+                  <RemainingTime targetDate={task.deadline} />
+                </div>
               </div>
               <div className="task-actions-bottom-right">
                 <span className="static-priority-emoji">
-                  {task.priority === 1 ? "🔴" : task.priority === 2 ? "🟠" : task.priority === 3 ? "🔵" : "⚪"}
+                  {task.priority === 1
+                    ? "🔴"
+                    : task.priority === 2
+                      ? "🟠"
+                      : task.priority === 3
+                        ? "🔵"
+                        : "⚪"}
                 </span>
               </div>
             </li>
@@ -336,7 +366,6 @@ const Search_Task = ({ onClose, Tasks, setTasks }) => {
 };
 
 const TaskList = ({ Tasks, setTasks, onClose }) => {
-
   const handleDeleteTask = (idToDelete) => {
     setTasks(Tasks.filter((Task) => Task.id !== idToDelete));
   };
@@ -344,79 +373,89 @@ const TaskList = ({ Tasks, setTasks, onClose }) => {
   const handleUpdateTaskPriority = (taskId, newPriority) => {
     setTasks(
       Tasks.map((task) =>
-        task.id === taskId ? { ...task, priority: newPriority } : task
-      )
+        task.id === taskId ? { ...task, priority: newPriority } : task,
+      ),
     );
   };
 
   const handleUpdateTaskDeadline = (taskId, newDeadline) => {
     setTasks(
       Tasks.map((task) =>
-        task.id === taskId ? { ...task, deadline: newDeadline } : task
-      )
+        task.id === taskId ? { ...task, deadline: newDeadline } : task,
+      ),
     );
   };
 
   const handleToggleComplete = (taskId) => {
-    setTasks(Tasks.map((task) => 
-      task.id === taskId ? { ...task, completed: !task.completed } : task
-    ));
+    setTasks(
+      Tasks.map((task) =>
+        task.id === taskId ? { ...task, completed: !task.completed } : task,
+      ),
+    );
   };
 
-  const sortedTasks = [...Tasks].sort((a, b) => Number(a.completed || false) - Number(b.completed || false));
+  const sortedTasks = [...Tasks].sort(
+    (a, b) => Number(a.completed || false) - Number(b.completed || false),
+  );
 
-  return(
+  return (
     <div className="pop_up" onClick={onClose}>
       <div className="todo-container" onClick={(e) => e.stopPropagation()}>
-        <button className="close-task-btn" onClick={onClose}>✕</button>
+        <button className="close-task-btn" onClick={onClose}>
+          ✕
+        </button>
         <h3 className="search-title">All Tasks</h3>
-        
+
         <ul className="task-list">
-            {sortedTasks.map((Task) => (
-              <li key={Task.id} className={`task-item ${Task.completed ? 'completed-task' : ''}`}>
-                <div className="task-text-container">
-                  <input 
-                    type="checkbox" 
-                    className="task-checkbox"
-                    checked={Task.completed || false} 
-                    onChange={() => handleToggleComplete(Task.id)} 
-                  />
-                  <div className="task-text">{Task.text}</div>
-                  
-                    <div className="task-deadline-details">
-                      <span className="editable-deadline-container">
-                        📅
-                        <input 
-                          type="date" 
-                          className="hidden-date-input"
-                          value={Task.deadline || ""}
-                          onClick={(e) => e.target.showPicker()} 
-                          onChange={(e) => handleUpdateTaskDeadline(Task.id, e.target.value)} 
-                        />
-                      </span>
-                      <span className="task-deadline-date">{Task.deadline}</span>
-                      <RemainingTime targetDate={Task.deadline} />
-                    </div>
-                  
+          {sortedTasks.map((Task) => (
+            <li
+              key={Task.id}
+              className={`task-item ${Task.completed ? "completed-task" : ""}`}
+            >
+              <div className="task-text-container">
+                <input
+                  type="checkbox"
+                  className="task-checkbox"
+                  checked={Task.completed || false}
+                  onChange={() => handleToggleComplete(Task.id)}
+                />
+                <div className="task-text">{Task.text}</div>
+
+                <div className="task-deadline-details">
+                  <span className="editable-deadline-container">
+                    📅
+                    <input
+                      type="date"
+                      className="hidden-date-input"
+                      value={Task.deadline || ""}
+                      onClick={(e) => e.target.showPicker()}
+                      onChange={(e) =>
+                        handleUpdateTaskDeadline(Task.id, e.target.value)
+                      }
+                    />
+                  </span>
+                  <span className="task-deadline-date">{Task.deadline}</span>
+                  <RemainingTime targetDate={Task.deadline} />
                 </div>
-                
-                <div className="task-actions-bottom-right">
-                  <PriorityDropdown
-                    currentPriority={Task.priority || 4}
-                    onSelect={(newPriority) =>
-                      handleUpdateTaskPriority(Task.id, newPriority)
-                    }
-                  />
-                  <button
-                    onClick={() => handleDeleteTask(Task.id)}
-                    className="delete-btn"
-                  >
-                    ✕
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+              </div>
+
+              <div className="task-actions-bottom-right">
+                <PriorityDropdown
+                  currentPriority={Task.priority || 4}
+                  onSelect={(newPriority) =>
+                    handleUpdateTaskPriority(Task.id, newPriority)
+                  }
+                />
+                <button
+                  onClick={() => handleDeleteTask(Task.id)}
+                  className="delete-btn"
+                >
+                  ✕
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
@@ -424,24 +463,28 @@ const TaskList = ({ Tasks, setTasks, onClose }) => {
 
 const HighPriorityTasks = ({ Tasks, setTasks }) => {
   const topTasks = [...Tasks]
-    .filter(task => !task.completed)
+    .filter((task) => !task.completed)
     .sort((a, b) => a.priority - b.priority)
     .slice(0, 5);
 
   const handleUpdateTaskDeadline = (taskId, newDeadline) => {
     setTasks(
       Tasks.map((task) =>
-        task.id === taskId ? { ...task, deadline: newDeadline } : task
-      )
+        task.id === taskId ? { ...task, deadline: newDeadline } : task,
+      ),
     );
   };
 
   const getPriorityEmoji = (priority) => {
     switch (priority) {
-      case 1: return "🔴";
-      case 2: return "🟠";
-      case 3: return "🔵";
-      default: return "⚪";
+      case 1:
+        return "🔴";
+      case 2:
+        return "🟠";
+      case 3:
+        return "🔵";
+      default:
+        return "⚪";
     }
   };
 
@@ -454,24 +497,27 @@ const HighPriorityTasks = ({ Tasks, setTasks }) => {
         <ul className="high-priority-list">
           {topTasks.map((task) => (
             <li key={task.id} className="high-priority-item">
-              <span className="priority-emoji">{getPriorityEmoji(task.priority)}</span>
+              <span className="priority-emoji">
+                {getPriorityEmoji(task.priority)}
+              </span>
               <span className="task-text">{task.text}</span>
-              
-                <span className="task-deadline-details-inline">
-                  <span className="editable-deadline-container">
-                    📅
-                    <input 
-                      type="date" 
-                      className="hidden-date-input"
-                      value={task.deadline || ""}
-                      onClick={(e) => e.target.showPicker()} 
-                      onChange={(e) => handleUpdateTaskDeadline(task.id, e.target.value)} 
-                    />
-                  </span>
-                  <span className="task-deadline-date">{task.deadline}</span>
-                  <RemainingTime targetDate={task.deadline} />
+
+              <span className="task-deadline-details-inline">
+                <span className="editable-deadline-container">
+                  📅
+                  <input
+                    type="date"
+                    className="hidden-date-input"
+                    value={task.deadline || ""}
+                    onClick={(e) => e.target.showPicker()}
+                    onChange={(e) =>
+                      handleUpdateTaskDeadline(task.id, e.target.value)
+                    }
+                  />
                 </span>
-              
+                <span className="task-deadline-date">{task.deadline}</span>
+                <RemainingTime targetDate={task.deadline} />
+              </span>
             </li>
           ))}
         </ul>
@@ -480,8 +526,8 @@ const HighPriorityTasks = ({ Tasks, setTasks }) => {
   );
 };
 
-const SearchButton = ({onSearchClick}) =>{
-  return(
+const SearchButton = ({ onSearchClick }) => {
+  return (
     <div className="Search-Button">
       <button className="buttton" onClick={onSearchClick}>
         🔍
@@ -490,8 +536,8 @@ const SearchButton = ({onSearchClick}) =>{
   );
 };
 
-const AddButton = ({onAddTaskClick}) =>{
-  return(
+const AddButton = ({ onAddTaskClick }) => {
+  return (
     <div className="Add-button">
       <button className="buttton" onClick={onAddTaskClick}>
         ➕
@@ -500,8 +546,8 @@ const AddButton = ({onAddTaskClick}) =>{
   );
 };
 
-const TaskListButton = ({onTaskListClick}) =>{
-  return(
+const TaskListButton = ({ onTaskListClick }) => {
+  return (
     <div className="Task-button">
       <button className="buttton" onClick={onTaskListClick}>
         Load All Tasks
@@ -533,7 +579,7 @@ const Todo_App = () => {
         onSearchTaskClick={() => setIsSearchOpen(true)}
         onTaskListClick={() => setIsTaskListOpen(true)}
       />
-      
+
       {isAddTaskOpen && (
         <Add_Task
           onClose={() => setIsAddTaskOpen(false)}
@@ -543,9 +589,9 @@ const Todo_App = () => {
       )}
 
       {isSearchOpen && (
-        <Search_Task 
-          onClose={() => setIsSearchOpen(false)} 
-          Tasks={Tasks} 
+        <Search_Task
+          onClose={() => setIsSearchOpen(false)}
+          Tasks={Tasks}
           setTasks={setTasks}
         />
       )}
@@ -553,13 +599,13 @@ const Todo_App = () => {
       <HighPriorityTasks Tasks={Tasks} setTasks={setTasks} />
 
       {isTaskListOpen && (
-        <TaskList 
+        <TaskList
           onClose={() => setIsTaskListOpen(false)}
-          Tasks={Tasks} 
-          setTasks={setTasks} 
+          Tasks={Tasks}
+          setTasks={setTasks}
         />
       )}
-      <TaskListButton onTaskListClick={() =>setIsTaskListOpen(true)} />
+      <TaskListButton onTaskListClick={() => setIsTaskListOpen(true)} />
       <AddButton onAddTaskClick={() => setIsAddTaskOpen(true)} />
     </div>
   );
