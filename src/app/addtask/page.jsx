@@ -9,23 +9,27 @@ import TopBar, { TOPBAR_HEIGHT } from "@/components/topbar";
 import Footer from "@/components/footer";
 
 const AddTask = () => {
+	const handleClose = () => {
+	router.push("/home");
+	};
 	const router = useRouter();
 	const [inputValue, setInputValue] = useState("");
 	const [selectedPriority, setSelectedPriority] = useState(4);
 	const [deadline, setDeadline] = useState(null);
-	const [tasks, setTasks] = useState(() => {
-		const storedTasks = localStorage.getItem("todo_tasks");
-		return storedTasks ? JSON.parse(storedTasks) : [];
-	});
+	const [tasks, setTasks] = useState([]);
+	const [isHydrated, setIsHydrated] = useState(false);
 
 	useEffect(() => {
+		const storedTasks = localStorage.getItem("todo_tasks");
+		if (storedTasks) setTasks(JSON.parse(storedTasks));
+		setIsHydrated(true);
+	}, []);
+
+	useEffect(() => {
+		if (!isHydrated) return;
 		localStorage.setItem("todo_tasks", JSON.stringify(tasks));
 		window.dispatchEvent(new Event("todo_tasks_updated"));
-	}, [tasks]);
-
-	const handleClose = () => {
-		router.push("/home");
-	};
+	}, [tasks, isHydrated]);
 
 	const handleInputChange = (e) => {
 		setInputValue(e.target.value);

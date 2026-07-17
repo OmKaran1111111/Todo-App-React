@@ -11,15 +11,20 @@ import Footer from "@/components/footer";
 
 const TaskList = () => {
 	const router = useRouter();
-	const [tasks, setTasks] = useState(() => {
-		const storedTasks = localStorage.getItem("todo_tasks");
-		return storedTasks ? JSON.parse(storedTasks) : [];
-	});
- 
+	const [tasks, setTasks] = useState([]);
+	const [isHydrated, setIsHydrated] = useState(false);
+
 	useEffect(() => {
+		const storedTasks = localStorage.getItem("todo_tasks");
+		if (storedTasks) setTasks(JSON.parse(storedTasks));
+		setIsHydrated(true);
+	}, []);
+
+	useEffect(() => {
+		if (!isHydrated) return;
 		localStorage.setItem("todo_tasks", JSON.stringify(tasks));
 		window.dispatchEvent(new Event("todo_tasks_updated"));
-	}, [tasks]);
+	}, [tasks, isHydrated]);
  
 	const handleClose = () => {
 		router.push("/");

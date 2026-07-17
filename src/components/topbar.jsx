@@ -69,10 +69,10 @@ const TopBar = () => {
           </li>
           <li className={itemClass("/dashboard")}>
             <Link
-              href="/Dashboard"
+              href="/dashboard"
               onClick={closeSidebar}
               className="block w-full h-full"
-              aria-current={isActive("/Dashboard") ? "page" : undefined}
+              aria-current={isActive("/dashboard") ? "page" : undefined}
             >
               DashBoard
             </Link>

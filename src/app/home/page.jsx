@@ -337,9 +337,6 @@ const Todo_App = () => {
     });
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("todo_tasks", JSON.stringify(Tasks));
-  }, [Tasks]);
 
   useEffect(() => {
     const handleTasksUpdated = () => {
