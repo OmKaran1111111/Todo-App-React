@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react";
-import { useSignIn, useSignUp, useClerk } from "@clerk/nextjs";
+import { useSignIn, useSignUp } from "@clerk/nextjs/legacy";
+import { useClerk } from "@clerk/nextjs";import { useRouter } from "next/navigation";
 
 const MailIcon = () => (
   <svg className="text-[#1c2c46] shrink-0 ml-2.5" width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -58,6 +59,7 @@ const LoginForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [signInStrategy, setSignInStrategy] = useState(null);
+  const router = useRouter();
 
   const resetFeedback = () => setError("");
 
@@ -75,19 +77,27 @@ const LoginForm = () => {
       );
       return false;
     }
+    router.push("/home");
     return true;
   };
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    if (!signInLoaded) return;
+    console.log("SUBMIT CLICKED, signInLoaded:", signInLoaded);
+    if (!signInLoaded) {
+      console.log("BLOCKED: signIn not loaded yet");
+      return;
+    }
     setLoading(true);
     resetFeedback();
     try {
       const result = await signIn.create({ identifier: email, password });
+      console.log("SIGNIN RESULT STATUS:", result.status, result);
 
       if (result.status === "complete") {
+        console.log("CALLING finishSignIn");
         await finishSignIn(result.createdSessionId);
+        console.log("finishSignIn DONE");
         return;
       }
 
@@ -152,6 +162,7 @@ const LoginForm = () => {
       console.error("Unhandled sign-in status:", result.status, result);
       setError("We couldn't complete your sign-in. Please try again or contact support.");
     } catch (err) {
+      console.error("SIGNIN THREW ERROR:", err);
       setError(err?.errors?.[0]?.message || "Could not sign in. Check your details and try again.");
     } finally {
       setLoading(false);
@@ -251,6 +262,7 @@ const LoginForm = () => {
       const result = await signUp.attemptEmailAddressVerification({ code });
       if (result.status === "complete") {
         await setActiveSignUp({ session: result.createdSessionId });
+        router.push("/home");
       } else {
         setError("That code didn't work. Please try again.");
       }

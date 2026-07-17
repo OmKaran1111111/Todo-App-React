@@ -110,13 +110,18 @@ const TopBar = () => {
           <li
             className="cursor-pointer"
             onClick={async () => {
+              console.log("LOGOUT CLICKED");
               closeSidebar();
-              signOut({ redirectUrl: "/login" }); 
+              try {
+                await signOut();
+                router.push("/Login");
+                console.log("SIGNOUT SUCCESS");
+              } catch (err) {
+                console.error("SIGNOUT FAILED:", err);
+              }
             }}
           >
-            <SignOutButton>
               Log Out
-            </SignOutButton>
           </li>
         </ul>
       </div>
