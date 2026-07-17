@@ -1,11 +1,17 @@
+"use client";
+
 import { useState } from "react";
 import Link from "next/link";
-import { useClerk } from "@clerk/nextjs"
-import { usePathname } from "next/navigation";
+import { useClerk } from "@clerk/nextjs";
+import { usePathname, useRouter } from "next/navigation";
+import { SignOutButton } from "@clerk/nextjs";
+
 const TopBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { signOut } = useClerk();
   const pathname = usePathname();
+  const router = useRouter();
+
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
 
@@ -61,7 +67,7 @@ const TopBar = () => {
               Home
             </Link>
           </li>
-          <li className={itemClass("/Dashboard")}>
+          <li className={itemClass("/dashboard")}>
             <Link
               href="/Dashboard"
               onClick={closeSidebar}
@@ -103,12 +109,14 @@ const TopBar = () => {
           </li>
           <li
             className="cursor-pointer"
-            onClick={() => {
+            onClick={async () => {
               closeSidebar();
-              signOut({ redirectUrl: "/" });
+              signOut({ redirectUrl: "/login" }); 
             }}
           >
-            Log Out
+            <SignOutButton>
+              Log Out
+            </SignOutButton>
           </li>
         </ul>
       </div>
