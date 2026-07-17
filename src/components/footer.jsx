@@ -1,9 +1,12 @@
-import { Link, useLocation } from "react-router-dom";
+"use client"
+
+import  Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const Footer = () => {
-  const location = useLocation();
+  const pathname = usePathname();
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => pathname === path;
 
   const linkClass = (path) =>
     `block py-2 px-5 rounded-full text-base cursor-pointer self-center transition-colors ${
@@ -22,7 +25,7 @@ const Footer = () => {
 
       <div className="fixed z-[101] bottom-[15px] left-1/2 -translate-x-1/2">
         <Link
-          to="/tasklist"
+          href="/tasklist"
           onClick={() => {}}
           className={linkClass("/tasklist")}
           aria-current={isActive("/tasklist") ? "page" : undefined}
@@ -33,7 +36,7 @@ const Footer = () => {
 
       <div className="fixed z-[101] bottom-[15px] right-[15px] text-[30px]">
         <Link
-          to="/addtask"
+          href="/addtask"
           className={linkClass("/addtask")}
           aria-current={isActive("/addtask") ? "page" : undefined}
         >
@@ -45,4 +48,4 @@ const Footer = () => {
 };
 
 export const FOOTER_HEIGHT = 70;
-export default Footer;
+export default Footer; 

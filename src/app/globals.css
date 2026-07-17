@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+:root {
+  --text-main: #1d1d1f;
+  --apple-blue: #0071e3;
+  --apple-blue-hover: #0077ed;
+}
 * {
   box-sizing: border-box;
   margin: 0;
@@ -13,7 +18,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
-  background-image: url("/src/assets/image.svg");
+  background-image: url("/image.svg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

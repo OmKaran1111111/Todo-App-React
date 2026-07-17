@@ -1,65 +1,69 @@
+"use client";
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Link, useNavigate } from "react-router-dom";
-import { useClerk } from "@clerk/clerk-react";
-import PriorityDropdown from "./components/PriorityDropdown";
-import RemainingTime from "./components/RemainingTime";
-import DonutChart from "./components/Donutchart";
-import InfoBoxes from "./components/infoboxes";
-import TopBar, { TOPBAR_HEIGHT } from "./components/topbar";
-import Footer, { FOOTER_HEIGHT } from "./components/footer";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useClerk } from "@clerk/nextjs";
+import PriorityDropdown from "@/components/PriorityDropdown";
+import RemainingTime from "@/components/RemainingTime";
+import DonutChart from "@/components/Donutchart";
+import InfoBoxes from "@/components/infoboxes";
+import TopBar, { TOPBAR_HEIGHT } from "@/components/topbar";
+import Footer, { FOOTER_HEIGHT } from "@/components/footer";
 
 const Dashboard = ({ Tasks }) => {
   const numberOfTasks = Tasks.length;
   const noOfComp = Tasks.filter((task) => task.completed).length;
- 
+
   const now = new Date();
- 
+
   const completedBeforeDeadline = Tasks.filter(
     (task) =>
       task.completed &&
       task.completedAt &&
       new Date(task.completedAt) <= new Date(task.deadline),
   ).length;
- 
+
   const completedAfterDeadline = Tasks.filter(
     (task) =>
       task.completed &&
       task.completedAt &&
       new Date(task.completedAt) > new Date(task.deadline),
   ).length;
- 
+
   const remainingBeforeDeadline = Tasks.filter(
     (task) => !task.completed && new Date(task.deadline) >= now,
   ).length;
- 
+
   const remainingAfterDeadline = Tasks.filter(
     (task) => !task.completed && new Date(task.deadline) < now,
   ).length;
- 
+
   const data = [
     { name: "completedBeforeDeadline", value: completedBeforeDeadline },
     { name: "completedAfterDeadline", value: completedAfterDeadline },
     { name: "remainingBeforeDeadline", value: remainingBeforeDeadline },
     { name: "remainingAfterDeadline", value: remainingAfterDeadline },
   ];
- 
+
   const COLORS = ["#22C55E", "#F59E0B", "#3B82F6", "#EF4444"];
- 
+
   const labels = {
     completedBeforeDeadline: "Completed on time",
     completedAfterDeadline: "Completed late",
     remainingBeforeDeadline: "Remaining (not overdue)",
     remainingAfterDeadline: "Remaining (overdue)",
   };
- 
+
   return (
-    <div className="w-full flex flex-col md:flex-row md:justify-center 
-      items-center gap-4 md:gap-8 px-4">
+    <div
+      className="w-full flex flex-col md:flex-row md:justify-center 
+      items-center gap-4 md:gap-8 px-4"
+    >
       <InfoBoxes
         totalTasks={numberOfTasks}
         completedTasks={noOfComp}
-        remainingTasks={numberOfTasks-noOfComp}
+        remainingTasks={numberOfTasks - noOfComp}
         remainingOnTime={remainingBeforeDeadline}
         remainingOverdue={remainingAfterDeadline}
       />
@@ -300,16 +304,30 @@ const HighPriorityTasks = ({ Tasks, setTasks }) => {
 
 const Todo_App = () => {
   const [isTaskListOpen, setIsTaskListOpen] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
 
-  const [Tasks, setTasks] = useState(() => {
+  const [Tasks, setTasks] = useState([]);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
     const sTasks = localStorage.getItem("todo_tasks");
-    return sTasks ? JSON.parse(sTasks) : [];
-  });
+    if (sTasks) {
+      setTasks(JSON.parse(sTasks));
+    }
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (isHydrated) {
+      localStorage.setItem("todo_tasks", JSON.stringify(Tasks));
+    }
+  }, [Tasks, isHydrated]);
 
   useEffect(() => {
     setTasks((prev) => {
-      const needsMigration = prev.some((task) => task.completed && !task.completedAt);
+      const needsMigration = prev.some(
+        (task) => task.completed && !task.completedAt,
+      );
       if (!needsMigration) return prev;
       return prev.map((task) =>
         task.completed && !task.completedAt
@@ -322,7 +340,7 @@ const Todo_App = () => {
   useEffect(() => {
     localStorage.setItem("todo_tasks", JSON.stringify(Tasks));
   }, [Tasks]);
-  
+
   useEffect(() => {
     const handleTasksUpdated = () => {
       const sTasks = localStorage.getItem("todo_tasks");
@@ -338,20 +356,20 @@ const Todo_App = () => {
 
   return (
     <div>
-      <TopBar/>
-      <div style={{ paddingTop: TOPBAR_HEIGHT, paddingBottom: FOOTER_HEIGHT }}> 
-      <Dashboard Tasks={Tasks} />
-      <HighPriorityTasks Tasks={Tasks} setTasks={setTasks} />
+      <TopBar />
+      <div style={{ paddingTop: TOPBAR_HEIGHT, paddingBottom: FOOTER_HEIGHT }}>
+        <Dashboard Tasks={Tasks} />
+        <HighPriorityTasks Tasks={Tasks} setTasks={setTasks} />
 
-      {isTaskListOpen && (
-        <TaskList
-          onClose={() => setIsTaskListOpen(false)}
-          Tasks={Tasks}
-          setTasks={setTasks}
-        />
-      )}
-      <Footer />
-    </div>
+        {isTaskListOpen && (
+          <TaskList
+            onClose={() => setIsTaskListOpen(false)}
+            Tasks={Tasks}
+            setTasks={setTasks}
+          />
+        )}
+        <Footer />
+      </div>
     </div>
   );
 };

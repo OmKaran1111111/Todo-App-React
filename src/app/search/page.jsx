@@ -1,15 +1,16 @@
+"use client"
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { useNavigate } from "react-router-dom";
-import PriorityDropdown from "./components/PriorityDropdown";
-import RemainingTime from "./components/RemainingTime";
-import { TOPBAR_HEIGHT } from "./components/topbar";
-import TopBar from "./components/topbar";
-import Footer from "./components/footer";
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import PriorityDropdown from "@/components/PriorityDropdown";
+import RemainingTime from "@/components/RemainingTime";
+import { TOPBAR_HEIGHT } from "@/components/topbar";
+import TopBar from "@/components/topbar";
+import Footer from "@/components/footer";
 
 
 const Search_Task = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [searchInput, setSearchInput] = useState("");
   const [tasks, setTasks] = useState(() => {
     const storedTasks = localStorage.getItem("todo_tasks");
@@ -19,7 +20,7 @@ const Search_Task = () => {
     localStorage.setItem("todo_tasks", JSON.stringify(tasks));
   }, [tasks]);
   const handleClose = () => {
-    navigate("/");
+    router.push("/home");
   };
   const handleUpdateTaskDeadline = (taskId, newDeadline) => {
     setTasks(

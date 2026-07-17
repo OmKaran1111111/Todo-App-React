@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Link, useNavigate } from "react-router-dom";
-import DonutChart from "./components/Donutchart";
-import InfoBoxes from "./components/infoboxes";
-import TopBar, { TOPBAR_HEIGHT } from "./components/topbar";
-import Footer, { FOOTER_HEIGHT } from "./components/footer";
+import DonutChart from "@/components/Donutchart";
+import InfoBoxes from "@/components/infoboxes";
+import TopBar, { TOPBAR_HEIGHT } from "@/components/topbar";
+import Footer, { FOOTER_HEIGHT } from "@/components/footer";
 
 const Dashboard = () => {
   const [Tasks, setTasks] = useState(() => {

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Link, useNavigate } from "react-router-dom";
-import { useClerk } from "@clerk/clerk-react";
+import { useClerk } from "@clerk/nextjs"
 
 const PriorityDropdown = ({ currentPriority, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,16 +1,15 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { useClerk } from "@clerk/clerk-react";
-
+import Link from "next/link";
+import { useClerk } from "@clerk/nextjs"
+import { usePathname } from "next/navigation";
 const TopBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { signOut } = useClerk();
-  const location = useLocation();
-
+  const pathname = usePathname();
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => pathname === path;
 
   const itemClass = (path) =>
     isActive(path) ? "!bg-[#8a5a5a] !border-[#8a5a5a] !text-white" : "";
@@ -38,7 +37,7 @@ const TopBar = () => {
           cursor-pointer top-[15px] right-[15px] text-[30px]"
       >
         <Link
-          to="/search"
+          href="/search"
           className="bg-transparent border-none text-[#edcccc] py-2 px-5
             text-base cursor-pointer self-center"
         >
@@ -54,7 +53,7 @@ const TopBar = () => {
         <ul>
           <li className={itemClass("/home")}>
             <Link
-              to="/home"
+              href="/home"
               onClick={closeSidebar}
               className="block w-full h-full"
               aria-current={isActive("/home") ? "page" : undefined}
@@ -64,7 +63,7 @@ const TopBar = () => {
           </li>
           <li className={itemClass("/Dashboard")}>
             <Link
-              to="/Dashboard"
+              href="/Dashboard"
               onClick={closeSidebar}
               className="block w-full h-full"
               aria-current={isActive("/Dashboard") ? "page" : undefined}
@@ -74,7 +73,7 @@ const TopBar = () => {
           </li>
           <li className={itemClass("/addtask")}>
             <Link
-              to="/addtask"
+              href="/addtask"
               onClick={closeSidebar}
               className="block w-full h-full"
               aria-current={isActive("/addtask") ? "page" : undefined}
@@ -84,7 +83,7 @@ const TopBar = () => {
           </li>
           <li className={itemClass("/search")}>
             <Link
-              to="/search"
+              href="/search"
               onClick={closeSidebar}
               className="block w-full h-full"
               aria-current={isActive("/search") ? "page" : undefined}
@@ -94,7 +93,7 @@ const TopBar = () => {
           </li>
           <li className={itemClass("/tasklist")}>
             <Link
-              to="/tasklist"
+              href="/tasklist"
               onClick={closeSidebar}
               className="block w-full h-full"
               aria-current={isActive("/tasklist") ? "page" : undefined}

@@ -1,5 +1,6 @@
+"use client"
 import { useState } from "react";
-import { useSignIn, useSignUp, useClerk } from "@clerk/clerk-react";
+import { useSignIn, useSignUp, useClerk } from "@clerk/nextjs";
 
 const MailIcon = () => (
   <svg className="text-[#1c2c46] shrink-0 ml-2.5" width="18" height="18" viewBox="0 0 24 24" fill="none">

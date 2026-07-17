@@ -1,56 +1,34 @@
+"use client"
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useNavigate } from "react-router-dom";
-import PriorityDropdown from "./components/PriorityDropdown"
-import RemainingTime from "./components/RemainingTime";
-import TopBar, { TOPBAR_HEIGHT } from "./components/topbar";
-import Footer from "./components/footer";
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import PriorityDropdown from "@/components/PriorityDropdown"
+import RemainingTime from "@/components/RemainingTime";
+import TopBar, { TOPBAR_HEIGHT } from "@/components/topbar";
+import Footer from "@/components/footer";
 
-const AddTask = () => {
-	const navigate = useNavigate();
-	const [inputValue, setInputValue] = useState("");
-	const [selectedPriority, setSelectedPriority] = useState(4);
-	const [deadline, setDeadline] = useState(null);
+
+const TaskList = () => {
+	const router = useRouter();
 	const [tasks, setTasks] = useState(() => {
 		const storedTasks = localStorage.getItem("todo_tasks");
 		return storedTasks ? JSON.parse(storedTasks) : [];
 	});
-
+ 
 	useEffect(() => {
 		localStorage.setItem("todo_tasks", JSON.stringify(tasks));
 		window.dispatchEvent(new Event("todo_tasks_updated"));
 	}, [tasks]);
-
+ 
 	const handleClose = () => {
-		navigate("/");
+		router.push("/");
 	};
-
-	const handleInputChange = (e) => {
-		setInputValue(e.target.value);
-	};
-
-	const handleAddTask = (e) => {
-		e.preventDefault();
-		if (!inputValue.trim()) return;
-
-		const newTask = {
-			id: Date.now(),
-			text: inputValue,
-			priority: selectedPriority,
-			completed: false,
-			deadline,
-		};
-
-		setTasks([...tasks, newTask]);
-		setInputValue("");
-		setSelectedPriority(4);
-		setDeadline(null);
-	};
-
+ 
 	const handleDeleteTask = (idToDelete) => {
 		setTasks(tasks.filter((task) => task.id !== idToDelete));
 	};
-
+ 
 	const handleUpdateTaskPriority = (taskId, newPriority) => {
 		setTasks(
 			tasks.map((task) =>
@@ -58,7 +36,7 @@ const AddTask = () => {
 			),
 		);
 	};
-
+ 
 	const handleUpdateTaskDeadline = (taskId, newDeadline) => {
 		setTasks(
 			tasks.map((task) =>
@@ -66,7 +44,7 @@ const AddTask = () => {
 			),
 		);
 	};
-
+ 
 	const handleToggleComplete = (taskId) => {
 		setTasks(
 			tasks.map((task) =>
@@ -74,69 +52,34 @@ const AddTask = () => {
 			),
 		);
 	};
-
+ 
 	const sortedTasks = [...tasks].sort(
 		(a, b) => Number(a.completed || false) - Number(b.completed || false),
 	);
-
+ 
 	return (
 		<>
 		<TopBar/>
 		<div className="fixed left-0 right-0 bottom-0 bg-white/10 backdrop-blur-[16px] 
 			backdrop-saturate-200 flex flex-col items-center z-[500] 
-			animate-[fadeIn_0.25s_ease-out] py-[5vh] sm:py-[8vh] px-5"
+			animate-[fadeIn_0.25s_ease-out] py-[5vh] sm:py-[8vh] px-5" 
 			style={{ top: TOPBAR_HEIGHT }}
 			onClick={handleClose}>
 			<div className="todo-container" onClick={(e) => e.stopPropagation()}>
 				<div className="flex justify-between items-center w-full mb-3 px-1">
-					<h3 className="text-xl font-bold text-[#dae5f4]">Add Task</h3>
+					<h3 className="text-xl font-bold text-[#dae5f4]">All Tasks</h3>
 					<button className="flex h-8 w-8 items-center justify-center rounded-full 
 						bg-black/[0.04] text-base text-[var(--text-main)] transition-all 
 						duration-200 hover:bg-red-500/15 hover:text-red-500 cursor-pointer" onClick={handleClose}>
 						✕
 					</button>
 				</div>
-
-				<form onSubmit={handleAddTask} className="flex flex-col gap-[10px] relative">
-					<input
-						type="text"
-						placeholder="Enter a new task..."
-						value={inputValue}
-						onChange={handleInputChange}
-					/>
-					<div className="flex items-center gap-2">
-						<span className="inline-block relative text-[2rem] cursor-pointer">
-							📅
-							<input
-								type="date"
-								className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-								value={deadline || ""}
-								onClick={(e) => e.target.showPicker()}
-								onChange={(e) => setDeadline(e.target.value)}
-							/>
-						</span>
-						{deadline ? (
-							<span className="text-sm text-[#ff6565] font-semibold">{deadline}</span>
-						) : (
-							<span className="text-sm text-slate-400">No deadline set</span>
-						)}
-					</div>
-					<div className="flex justify-between items-center">
-						<div className="flex items-center gap-2 relative bottom-auto right-auto">
-							<PriorityDropdown
-								currentPriority={selectedPriority}
-								onSelect={setSelectedPriority}
-							/>
-							<span className="flex justify-between items-center">Priority</span>
-						</div>
-						<button type="submit">
-							Add Task
-						</button>
-					</div>
-				</form>
-
+ 
 				<ul className="list-none mt-0.5 overflow-y-auto flex-1 min-h-0">
-					{sortedTasks.map((task) => (
+					{sortedTasks.length === 0 ? (
+						<p className="text-[#dae5f4] text-[0.95rem] text-center py-2.5">No tasks added yet!</p>
+					) : (
+						sortedTasks.map((task) => (
 						<li
 							key={task.id}
 							className={
@@ -175,7 +118,7 @@ const AddTask = () => {
 									task.completed ? "text-[#888] line-through [text-shadow:0_1px_1px_rgba(246,165,165,0.4)]" : "text-[#dae5f4]"
 								}`}>
 									{task.text}</div>
-
+ 
 								<div className="mt-[4px]">
 									<span className="inline-block relative cursor-pointer">
 										📅
@@ -193,7 +136,7 @@ const AddTask = () => {
 									<RemainingTime targetDate={task.deadline} />
 								</div>
 							</div>
-
+ 
 							<div>
 								<PriorityDropdown
 									currentPriority={task.priority || 4}
@@ -211,7 +154,7 @@ const AddTask = () => {
 								</button>
 							</div>
 						</li>
-					))}
+					)))}
 				</ul>
 			</div>
 		</div>
@@ -219,5 +162,5 @@ const AddTask = () => {
 		</>
 	);
 };
-
-export default AddTask;
+ 
+export default TaskList;
